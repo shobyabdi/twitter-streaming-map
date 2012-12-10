@@ -1,0 +1,163 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Shabihul Abdi" />
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <style type="text/css">
+      div.scroll {
+		overflow: auto;
+		border: 1px solid #666;
+		padding: 8px;
+		}
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9eP5e916ekJsV0dD2yj__tWHF9E2k4f4&sensor=true">
+    </script>
+    <script type="text/javascript">
+      var map;
+      var markers = new Array();
+      var infoWindow = new google.maps.InfoWindow({});
+      var connected = false;
+      var original;
+      function initialize() {
+      	navigator.geolocation.getCurrentPosition(setupMap, error);
+      }
+      
+      function setupMap(position) {
+      	  var mapOptions = {
+          center: new google.maps.LatLng(position.coords.latitude,position.coords.longitude),
+          zoom: 2,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);      
+      }
+      
+      function error(msg) {
+      	alert(msg);
+      }
+      function clearMarkers() {
+	     infoWindow.close();
+	     for(var i = 0; i < markers.length; i++) {
+	         markers[i].setMap(null);
+	     }
+	     markers.length = 0;
+	  }
+	  function AutoCenter() {
+		//  Create a new viewpoint bound
+		var bounds = new google.maps.LatLngBounds();
+		//  Go through each...
+		$.each(markers, function (index, marker) {
+			bounds.extend(marker.position);
+		});
+		//  Fit these bounds to the map
+		map.fitBounds(bounds);
+		map.setZoom(3); 
+	 }
+	  function callEndpoint() {
+	  	if(connected == false) {
+	  		socket.socket.connect();
+	  	}
+	  	if(original != $('#search').val()) {
+	  		original = $('#search').val();
+	  		console.log($('#search').val());
+		  	$("#thetable").find("tr:gt(0)").remove();
+		  	clearMarkers();
+		  	$.get('/twitter/'+$('#search').val(), function(data) {
+		  		console.log('Load Data');
+		  	});
+	  	}
+	  }	 
+	function stopSocket() {	
+	  	socket.disconnect();	
+	}	  
+	  
+	function toTitleCase(str) {
+	    return str.replace(/(?:^|\s)\w/g, function(match) {
+	        return match.toUpperCase();
+	    });
+	}
+	function noenter(ev)  {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            callEndpoint();
+            return false;
+         } else {
+         	callEndpoint();
+            return true;
+         }
+     }
+	</script>
+</head>
+<body onload="initialize()">
+	<script>
+		  var socket = io.connect(window.location.hostname);
+		  socket.on('connect', function () {
+			  	$('#running').show();
+	  			$('#stopped').hide();
+	  			connected = true;
+		  });		  
+		  socket.on('twitter', function (data) {
+		    var parsed_data = JSON.parse(data);
+		    console.log(parsed_data);
+		  	var myLatlng = new google.maps.LatLng(parsed_data.coordinates.coordinates[1],parsed_data.coordinates.coordinates[0]);
+			var marker = new google.maps.Marker({
+			    position: myLatlng,
+			    title: parsed_data.address
+			});
+	        google.maps.event.addListener(marker, "click", function(event) {
+	            infoWindow.setContent('<img src="'+parsed_data.user.profile_image_url+'"/>' + ' ' + parsed_data.user.name + '<br/>' + parsed_data.text);
+	            infoWindow.open(map, this);
+	         });
+			marker.setMap(map); 
+			markers.push(marker);
+			AutoCenter();
+		    $('#thetable').append('<tr class="success"><td><img src="'+parsed_data.user.profile_image_url+'"/></td><td>'+parsed_data.user.name+'</td><td>'+parsed_data.text+'</td></tr>');
+		  });
+		  socket.on('disconnect', function () {
+			  	$('#running').hide();
+	  			$('#stopped').show();
+	  			connected = false;
+		  });
+	</script>
+ <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+            <h2>Twitter Streaming Map and List Below The Map (Terrible Name)</h2>
+            <span id="running" style="display:none">Stream is Running</span>
+            <span id="stopped" style="display:none">Stream has Stopped</span>
+            <p>
+            	<div class="input-append">
+					<input id="search" type="text" class="span3">
+			    	<button type="button" onkeypress="return noenter(event);" class="btn" onclick="callEndpoint();">Start NOW!</button>
+			    	<button type="button" class="btn" onclick="stopSocket();">Stop for a Sec</button>
+			    </div>
+            </p>
+          <div class="row-fluid">
+          	<div class="span12">
+          		<div id="map_canvas" style="width:100%; height:80%"></div>
+          	</div>
+          </div>
+          <div class="row-fluid">
+          	<div class="span12">
+	          	<div style="height:80%; overflow:scroll;">
+				<table id="thetable" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Picture</th>
+							<th>Name</th>
+							<th>Message</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+	          </div>
+          </div>
+        </div>
+      </div>   
+      </div>	
+</body>
+</html>
+
