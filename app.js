@@ -7,6 +7,8 @@ var io = require('socket.io').listen(server);
 
 var twitter = require('ntwitter');
 
+var port    = process.env.PORT || 3000;
+
 var twitter_user_key     = process.env.TWITTER_USER_KEY || 'zC4UDsxhFEXLgWRMMPAcpg';
 var twitter_user_secret  = process.env.TWITTER_USER_SECRET || 'V80pq4sBfdpVZCh6HrGyY4lbChJj1ScEY7o8XnrtbbY';
 var twitter_key          = process.env.TWITTER_KEY || '7135862-4tozpQhvEdPIdUopvhoV9bP10QJpJTGUJPLd674auw';
@@ -89,4 +91,4 @@ app.get('/twitter/:hashtag', function(request, response) {
  * app initialization              *
  ***********************************/
 
-server.listen(5000);
+server.listen(port);
