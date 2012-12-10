@@ -14,8 +14,6 @@ var twitter_user_secret  = process.env.TWITTER_USER_SECRET || 'V80pq4sBfdpVZCh6H
 var twitter_key          = process.env.TWITTER_KEY || '7135862-4tozpQhvEdPIdUopvhoV9bP10QJpJTGUJPLd674auw';
 var twitter_secret       = process.env.TWITTER_SECRET || 'uaCmognBJE0UySfXDydQ3c4YOyoiqV0YCqBl2BYC30';
 
-var hashtag   = process.env.HASHTAG || '#movember';
-
 /***********************************
  * socket.io configuration         *
  ***********************************/
@@ -53,7 +51,7 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
   app.use(express.cookieParser()); 
-  app.use(express.session({ secret: 'mongodb testing baby' })); 
+  app.use(express.session({ secret: 'nforce testing baby' }));
 });
 
 app.configure('development', function(){
