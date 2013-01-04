@@ -47,6 +47,7 @@ var twit = new twitter({
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
+  app.engine('html', require('ejs').renderFile);
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
@@ -68,10 +69,7 @@ app.configure('production', function(){
  ***********************************/
 
 app.get('/', function(req, res) {
-    fs.readFile(__dirname + '/views/index.html', 'utf8', function(err, text){
-        res.send(text);
-        res.end();
-    });
+   res.render("index.html");
 });
 
 app.get('/twitter/:hashtag', function(request, response) {
