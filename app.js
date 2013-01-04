@@ -3,11 +3,12 @@ var express = require('express')
 
 var app = express();
 var server = http.createServer(app);
+
 var io = require('socket.io').listen(server);
 
 var twitter = require('ntwitter');
 
-var port    = process.env.PORT || 3000;
+var port    = process.env.PORT || 5000;
 
 var twitter_user_key     = process.env.TWITTER_USER_KEY || 'zC4UDsxhFEXLgWRMMPAcpg';
 var twitter_user_secret  = process.env.TWITTER_USER_SECRET || 'V80pq4sBfdpVZCh6HrGyY4lbChJj1ScEY7o8XnrtbbY';

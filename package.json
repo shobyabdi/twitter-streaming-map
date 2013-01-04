@@ -2,7 +2,7 @@
   "name": "twitter-streaming-map",
   "version": "0.0.1",
   "dependencies": {
-    "express": "3.0.0",
+    "express": "3.0.5",
     "request": "~2.9.203",
     "ntwitter": "0.4.0",
     "socket.io": "0.9.8"

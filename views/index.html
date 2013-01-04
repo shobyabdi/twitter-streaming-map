@@ -65,9 +65,7 @@
 	  		console.log($('#search').val());
 		  	$("#thetable").find("tr:gt(0)").remove();
 		  	clearMarkers();
-		  	$.get('/twitter/'+$('#search').val(), function(data) {
-		  		console.log('Load Data');
-		  	});
+		  	$.get('/twitter/'+$('#search').val());
 	  	}
 	  }	 
 	function stopSocket() {	
@@ -79,18 +77,10 @@
 	        return match.toUpperCase();
 	    });
 	}
-	function noenter(ev)  {
-        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
-            callEndpoint();
-            return false;
-         } else {
-         	callEndpoint();
-            return true;
-         }
-     }
+     $(document).ready(initialize());
 	</script>
 </head>
-<body onload="initialize()">
+<body>
 	<script>
 		  var socket = io.connect(window.location.hostname);
 		  socket.on('connect', function () {
@@ -99,6 +89,7 @@
 	  			connected = true;
 		  });		  
 		  socket.on('twitter', function (data) {
+		  	$.get('http://localhost:8934/blink1/pattern/play?pname=yellowalert');
 		    var parsed_data = JSON.parse(data);
 		    console.log(parsed_data);
 		  	var myLatlng = new google.maps.LatLng(parsed_data.coordinates.coordinates[1],parsed_data.coordinates.coordinates[0]);
@@ -125,16 +116,17 @@
       <div class="row-fluid">
         <div class="span12">
             <h2>Twitter Streaming Map and List Below The Map (Terrible Name)</h2>
-            <span id="running" style="display:none">Stream is Running</span>
-            <span id="stopped" style="display:none">Stream has Stopped</span>
+            <span id="running" style="display:none">Pipe is Open</span>
+            <span id="stopped" style="display:none">Pipe is Closed</span>
             <p>
             	<div class="input-append">
 					<input id="search" type="text" class="span3">
-			    	<button type="button" onkeypress="return noenter(event);" class="btn" onclick="callEndpoint();">Start NOW!</button>
-			    	<button type="button" class="btn" onclick="stopSocket();">Stop for a Sec</button>
+			    	<button type="button" class="btn btn-success" onclick="callEndpoint();">Start NOW!</button>
+			    	<button type="button" class="btn btn-danger" onclick="stopSocket();">Stop for a Sec</button>
+			    	<button type="button" class="btn" data-toggle="collapse" data-target="#map">I WANNA SEE THE LIST!!</button>
 			    </div>
             </p>
-          <div class="row-fluid">
+          <div id="map" class="row-fluid collapse in">
           	<div class="span12">
           		<div id="map_canvas" style="width:100%; height:80%"></div>
           	</div>
