@@ -10,10 +10,10 @@ var twitter = require('ntwitter');
 
 var port    = process.env.PORT || 5000;
 
-var twitter_user_key     = process.env.TWITTER_USER_KEY || 'zC4UDsxhFEXLgWRMMPAcpg';
-var twitter_user_secret  = process.env.TWITTER_USER_SECRET || 'V80pq4sBfdpVZCh6HrGyY4lbChJj1ScEY7o8XnrtbbY';
-var twitter_key          = process.env.TWITTER_KEY || '7135862-4tozpQhvEdPIdUopvhoV9bP10QJpJTGUJPLd674auw';
-var twitter_secret       = process.env.TWITTER_SECRET || 'uaCmognBJE0UySfXDydQ3c4YOyoiqV0YCqBl2BYC30';
+var twitter_user_key     = process.env.TWITTER_USER_KEY || '';
+var twitter_user_secret  = process.env.TWITTER_USER_SECRET || '';
+var twitter_key          = process.env.TWITTER_KEY || '';
+var twitter_secret       = process.env.TWITTER_SECRET || '';
 
 /***********************************
  * socket.io configuration         *

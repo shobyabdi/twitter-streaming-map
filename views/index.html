@@ -14,7 +14,7 @@
 		padding: 8px;
 		}
     </style>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9eP5e916ekJsV0dD2yj__tWHF9E2k4f4&sensor=true">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=&sensor=true">
     </script>
     <script type="text/javascript">
       var map;
@@ -89,7 +89,6 @@
 	  			connected = true;
 		  });		  
 		  socket.on('twitter', function (data) {
-		  	$.get('http://localhost:8934/blink1/pattern/play?pname=yellowalert');
 		    var parsed_data = JSON.parse(data);
 		    console.log(parsed_data);
 		  	var myLatlng = new google.maps.LatLng(parsed_data.coordinates.coordinates[1],parsed_data.coordinates.coordinates[0]);
